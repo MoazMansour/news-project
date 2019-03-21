@@ -22,7 +22,8 @@ def most_popular():
     db = psycopg2.connect("dbname = news")
     c = db.cursor()
     c.execute('''
-        select path, count(*) as views
+        
+        select substring(path,position('e/' IN path)+2) as slug, count(*) as views
         from log
         where status = '200 OK'
         and path != '/'
