@@ -39,13 +39,11 @@ def most_popular():
     db = psycopg2.connect("dbname = news")
     c = db.cursor()
     c.execute('''
-        select substring(path,position('e/' IN path)+2) as slug, count(*) as views
-        from log
-        where status = '200 OK'
-        and path != '/'
-        group by slug
-        order by views desc
-        limit 3''')
+        select a.title, v.views
+            from ranked_views as v JOIN articles as a
+            on a.slug = v.slug
+            limit 3
+            ''')
     results = c.fetchall()
     db.close()
     return results
