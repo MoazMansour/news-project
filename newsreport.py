@@ -17,6 +17,7 @@
 ##############################################################
 
 import psycopg2
+import textwrap
 
 def create_views():
     db = psycopg2.connect("dbname = news")
@@ -34,7 +35,6 @@ def create_views():
     db.commit()
     db.close()
 
-
 def most_popular():
     db = psycopg2.connect("dbname = news")
     c = db.cursor()
@@ -48,5 +48,19 @@ def most_popular():
     db.close()
     return results
 
+def write_report(
+        mostPop):
+    f = open("report.txt","w+")
+    header = '''
+                News Analytics Report
+                --------------------------\n
+                1. Most popular three articles of all time:\n
+                '''
+    f.write(textwrap.dedent(header))
+    for article in mostPop:
+        f.write("- {0} -- {1} \n".format(article[0],article[1]))
+    f.close()
+
 create_views()
 print(most_popular())
+write_report(most_popular())
