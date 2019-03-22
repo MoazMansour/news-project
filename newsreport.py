@@ -13,12 +13,13 @@
 ###############################################################################
 
 ##############################################################
-################# News Report Analytics tool #################
+# ---------------- News Report Analytics tool ----------------
 ##############################################################
 
 import psycopg2
 import textwrap
 import datetime
+
 
 def create_views():
     db = psycopg2.connect("dbname = news")
@@ -35,7 +36,8 @@ def create_views():
             group by slug
             order by views desc;
             ''')
-    # Create a author_views view table that holds the number of views per author id
+    # Create a author_views view table that holds the
+    #  number of views per author id
     c.execute('''
         create or replace view author_views as
         select author, sum(views) as sum
@@ -44,14 +46,16 @@ def create_views():
             group by author
             order by sum desc;
             ''')
-    # Create a total_req view table that holds the total number of requests per day
+    # Create a total_req view table that holds
+    # the total number of requests per day
     c.execute('''
         create or replace view total_req as
         select cast(time as date) as date, count(*) as total_req
             from log
             group by date;
             ''')
-    # Create a error_req view table that holds the failed number of requests per day
+    # Create a error_req view table that holds
+    # the failed number of requests per day
     c.execute('''
         create or replace view error_req as
         select cast(time as date) as date, count(*) as error_req
@@ -61,6 +65,7 @@ def create_views():
             ''')
     db.commit()
     db.close()
+
 
 def most_popular():
     db = psycopg2.connect("dbname = news")
@@ -75,6 +80,7 @@ def most_popular():
     db.close()
     return results
 
+
 def pop_author():
     db = psycopg2.connect("dbname = news")
     c = db.cursor()
@@ -86,6 +92,7 @@ def pop_author():
     results = c.fetchall()
     db.close()
     return results
+
 
 def error_per():
     db = psycopg2.connect("dbname = news")
@@ -105,10 +112,11 @@ def error_per():
     db.close()
     return results
 
+
 def write_report(
-            mostPop,popAuth,
+            mostPop, popAuth,
             errPer):
-    f = open("report.txt","w+")
+    f = open("report.txt", "w+")
     # Add header to the report
     header = '''
                 News Analytics Report
@@ -118,7 +126,7 @@ def write_report(
     f.write(textwrap.dedent(header))
     # Add the most popular list
     for article in mostPop:
-        f.write('- "{0}" -- {1} views \n'.format(article[0],article[1]))
+        f.write('- "{0}" -- {1} views \n'.format(article[0], article[1]))
     # Add a divider for the popular authors
     auth_divider = '''
                 --------------------------\n
@@ -127,7 +135,7 @@ def write_report(
     f.write(textwrap.dedent(auth_divider))
     # Add a list of the authors
     for author in popAuth:
-        f.write('- {0} -- {1} views \n'.format(author[0],author[1]))
+        f.write('- {0} -- {1} views \n'.format(author[0], author[1]))
     # Add a divider for the error report
     err_divider = '''
                 --------------------------\n
@@ -136,11 +144,12 @@ def write_report(
     f.write(textwrap.dedent(err_divider))
     # Add a list of the error days
     for day in errPer:
-        f.write('- {0} -- {1}% errors \n'.format(day[0].strftime("%B %d, %Y"),day[1]))
+        f.write('- {0} -- {1}% errors \n'.format(
+                day[0].strftime("%B %d, %Y"), day[1]))
     f.close()
 
 
 create_views()
 write_report(
-        most_popular(),pop_author(),
+        most_popular(), pop_author(),
         error_per())
