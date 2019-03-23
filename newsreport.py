@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 ###############################################################################
 # NAME:      newsreport.py
 # AUTHOR:    Moaz Mansour
@@ -10,6 +12,7 @@
 #
 # VERSION HISTORY:
 # 1.0    03/20/2019		Initial Version
+# 1.1    03/23/2019     Reviewed Version
 ###############################################################################
 
 ##############################################################
@@ -19,53 +22,6 @@
 import psycopg2
 import textwrap
 import datetime
-
-
-def create_views():
-    db = psycopg2.connect("dbname = news")
-    c = db.cursor()
-    # Create a ranked_views view table that ranks articles by number of views
-    # and turns the path col into a slug col
-    c.execute('''
-        create or replace view ranked_views as
-        select substring(path,position('e/' IN path)+2) as slug,
-               count(*) as views
-            from log
-            where status = '200 OK'
-            and path != '/'
-            group by slug
-            order by views desc;
-            ''')
-    # Create a author_views view table that holds the
-    #  number of views per author id
-    c.execute('''
-        create or replace view author_views as
-        select author, sum(views) as sum
-            from articles as a, ranked_views as v
-            where a.slug = v.slug
-            group by author
-            order by sum desc;
-            ''')
-    # Create a total_req view table that holds
-    # the total number of requests per day
-    c.execute('''
-        create or replace view total_req as
-        select cast(time as date) as date, count(*) as total_req
-            from log
-            group by date;
-            ''')
-    # Create a error_req view table that holds
-    # the failed number of requests per day
-    c.execute('''
-        create or replace view error_req as
-        select cast(time as date) as date, count(*) as error_req
-            from log
-            where status != '200 OK'
-            group by date;
-            ''')
-    db.commit()
-    db.close()
-
 
 def most_popular():
     db = psycopg2.connect("dbname = news")
@@ -148,8 +104,6 @@ def write_report(
                 day[0].strftime("%B %d, %Y"), day[1]))
     f.close()
 
-
-create_views()
 write_report(
         most_popular(), pop_author(),
         error_per())
