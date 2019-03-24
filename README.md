@@ -27,12 +27,7 @@ in one python code file which takes advantage if
 ## Setup and run instructions ##
 1. If you prefer to work in your own environment run the below code on the terminal
 to setup an empty news database `psql createdb testdb`
-2. If you prefer to use a vagrant virtualbox you will need to install two pieces of software:
-  - VirtualBox, which you can get from this [download page](https://www.virtualbox.org/wiki/Downloads)
-  - Vagrant, which you can get from this [download page](https://www.vagrantup.com/downloads.html)
-
-    Once you are done, run `vagrant up` in the terminal to get the VM set up using the provided vagrant file
-    Whenever, you need to connect to it afterwards just type `vagrant ssh` from the same directory
+2. You can also use a vagrant ready environment provided by Udacity [here](https://github.com/MoazMansour/fullstack-nanodegree-vm).
 3. run the newsdata.sql file to load the data in your database. You can find the zipped file [here](https://d17h27t6h515a5.cloudfront.net/topher/2016/August/57b5f748_newsdata/newsdata.zip)
 
   `psql -d news -f newsdata.sql`
