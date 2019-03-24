@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
-"""An analytics program on a news database part of udacity Full Stack Nano degree."""
+"""An analytics program on a mock news database."""
 
-##############################################################################.
+##############################################################################
 # NAME:      newsreport.py
 # AUTHOR:    Moaz Mansour
 # E-MAIL:	 moaz.mansour@gmail.com
@@ -12,7 +12,7 @@
 # VERSION HISTORY:
 # 1.0    03/20/2019		Initial Version
 # 1.1    03/23/2019     Reviewed Version
-##############################################################################.
+##############################################################################
 
 
 ##############################################################
@@ -21,7 +21,7 @@
 
 import psycopg2
 import textwrap
-import datetime
+
 
 def most_popular():
     """
@@ -50,7 +50,7 @@ def most_popular():
 
 def pop_author():
     """
-    Return the most popular article authors with their total article view counts.
+    Return the most popular article authors with their total view counts.
 
     Returns:
     A list of two element tuples. Each tuple contains:
@@ -84,7 +84,7 @@ def error_per():
     db = psycopg2.connect("dbname = news")
     c = db.cursor()
     c.execute('''
-        select date, percent
+        select to_char(date,'FMMonth DD, YYYY'), percent
             from (
                 select t.date,
                 cast((cast (error_req as float)
@@ -100,8 +100,8 @@ def error_per():
 
 
 def write_report(
-            mostPop, popAuth,
-            errPer):
+        mostPop, popAuth,
+        errPer):
     """
     Write and format the output of the three other called functions.
 
@@ -141,9 +141,9 @@ def write_report(
     f.write(textwrap.dedent(err_divider))
     # Add a list of the error days
     for day in errPer:
-        f.write('- {0} -- {1}% errors \n'.format(
-                day[0].strftime("%B %d, %Y"), day[1]))
+        f.write('- {0} -- {1}% errors \n'.format(day[0], day[1]))
     f.close()
+
 
 write_report(
         most_popular(), pop_author(),
