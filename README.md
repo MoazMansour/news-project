@@ -2,14 +2,19 @@
 
 AUTHOR: Moaz Mansour
 
-This project is build using python 3.7 in integration with PostgreSQL
-as part of Udacity's Full stack development nanodegree
+This project sets up a mock PostgreSQL database for a fictional news website.
+The provided Python script uses the psycopg2 library to query the database and
+produce a report that answers the following three questions:
 
-The purpose of this code is to analyze a news sql database to answer
-3 main questions
 1. What are the most popular three articles of all time?
 2. Who are the most popular article authors of all time?
 3. On which days did more than 1% of requests lead to errors?
+
+The program consists of two code files:
+1. create_views.sql:
+  To be run one in the database initialization to create required views
+2. newsreport.py:
+  Generates the report using the aforementioned created views
 
 The program was created to answer the 3 main questions all included
 in one python code file which takes advantage if
@@ -18,6 +23,23 @@ in one python code file which takes advantage if
 3. Different types of SQL table joins
 4. SQL table aggregations
 5. SQL subselect
+
+## Setup and run instructions ##
+1. If you prefer to work in your own environment run the below code on the terminal
+to setup an empty news database `psql createdb testdb`
+2. If you prefer to use a vagrant virtualbox you will need to install two pieces of software:
+  - VirtualBox, which you can get from this [download page](https://www.virtualbox.org/wiki/Downloads)
+  - Vagrant, which you can get from this [download page](https://www.vagrantup.com/downloads.html)
+
+    Once you are done, run `vagrant up` in the terminal to get the VM set up using the provided vagrant file
+    Whenever, you need to connect to it afterwards just type `vagrant ssh` from the same directory
+3. run the newsdata.sql file to load the data in your database. You can find the zipped file [here](https://d17h27t6h515a5.cloudfront.net/topher/2016/August/57b5f748_newsdata/newsdata.zip)
+
+  `psql -d news -f newsdata.sql`
+
+4. Once the database is setup run the create_views.sql file to create the required views using `psql -d news -f create_views.sql`
+   on the terminal. You will only need to run this once tho.
+5. Whenever you need the report printed out run the python script newsreport.py using `./newsreport.py` on the terminal
 
 ## Logic and Functions: ##
 

@@ -145,6 +145,12 @@ def write_report(
     f.close()
 
 
-write_report(
-        most_popular(), pop_author(),
-        error_per())
+def main():
+    """Generate report."""
+    write_report(
+            most_popular(), pop_author(),
+            error_per())
+
+
+if __name__ == '__main__':
+    main()
